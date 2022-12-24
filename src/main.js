@@ -51,6 +51,7 @@ require("brace/mode/xml");
 require("brace/theme/monokai");
 
 const electron = require("electron");
+
 electron.ipcRenderer.on("about", (arg, event) => {
   let component = router.currentRoute.matched[0].instances.default;
   if (event === "about-modal-active") {
@@ -58,24 +59,33 @@ electron.ipcRenderer.on("about", (arg, event) => {
   }
 });
 
-const BrowserWindow = electron.remote.BrowserWindow;
 
-const win = new BrowserWindow();
+// electron.remote.app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+//
+// const BrowserWindow = electron.remote.BrowserWindow;
+//
+// const win = new BrowserWindow({
+//   'node-integration': 'iframe',
+//   'web-preferences': {'web-security': false},
+//   width: 0,
+//   height: 0,
+// });
+//
+// win.webContents.session.webRequest.onBeforeSendHeaders(
+//   (details, callback) => {
+//     callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
+//   },
+// );
+//
+// win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+//   callback({
+//     responseHeaders: {
+//       'Access-Control-Allow-Origin': ['*'],
+//       ...details.responseHeaders,
+//     },
+//   });
+// });
 
-win.webContents.session.webRequest.onBeforeSendHeaders(
-  (details, callback) => {
-    callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
-  },
-);
-
-win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-  callback({
-    responseHeaders: {
-      'Access-Control-Allow-Origin': ['*'],
-      ...details.responseHeaders,
-    },
-  });
-});
 
 Vue.use(Buefy, {
   defaultIconPack: "fa"

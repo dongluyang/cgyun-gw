@@ -1,12 +1,12 @@
 {
-  "name": "code-notes",
-  "version": "1.2.4",
-  "author": "Laurent THIEBAULT <thiebault.laurent@gmail.com>",
-  "description": "A simple code snippet manager for developers built with Electron 🚀",
+  "name": "cgyun-gw",
+  "version": "0.0.1",
+  "author": "Dong Luyang <dongluyang2005@126.com>",
+  "description": "Cgyun gateway built with Electron 🚀",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lauthieb/code-notes.git"
+    "url": "git@github.com:dongluyang/cgyun-gw.git"
   },
   "main": "background.js",
   "scripts": {
@@ -57,7 +57,7 @@
     "@vue/test-utils": "^1.0.0-beta.31",
     "babel-eslint": "^10.1.0",
     "chromedriver": "^80.0.1",
-    "electron": "^8.2.4",
+    "electron": "^9.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-html": "^6.0.2",
     "eslint-plugin-prettier": "^3.1.1",
