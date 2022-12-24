@@ -11,8 +11,9 @@ export default new Router({
       component: require("@/components/notes-list/NotesList").default
     },
     {
-      path: "*",
-      redirect: "/"
-    }
+      path: "/white",
+      name: "white-list",
+      component: (resolve) => require(['@/components/white/DomainAndIpList'], resolve)
+    },
   ]
 });

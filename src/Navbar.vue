@@ -2,7 +2,7 @@
   <nav>
     <img
       class="logo"
-      src="~@/assets/img/code-notes-logo-white-full.png"
+      src="~@/assets/img/cgyun-gw-logo-white-full.png"
       alt="Code Notes logo"
     />
 

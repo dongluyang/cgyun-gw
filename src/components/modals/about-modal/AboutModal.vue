@@ -3,22 +3,21 @@
     <div class="modal-card-body">
       <div class="media">
         <div class="media-content">
-          <img src="~@/assets/img/code-notes-logo-black-full.png" alt="Image" />
+          <img src="~@/assets/img/cgyun-gw-logo-black-full.png" alt="Image" />
         </div>
       </div>
       <div class="text-center">
         <h4>v{{ appVersion }}</h4>
 
         <p>
-          A simple code snippet manager for developers built with Electron &
-          Vue.js 🚀
+          CGYun网关，提供安全、可靠的流量控制与数据服务 🚀
         </p>
 
-        <p>
-          Feel free to contribute on
-          <a @click="open('https://github.com/lauthieb/code-notes')">Github</a>
-          🍻
-        </p>
+<!--        <p>-->
+<!--          Feel free to contribute on-->
+<!--          <a @click="open('https://github.com/lauthieb/code-notes')">Github</a>-->
+<!--          🍻-->
+<!--        </p>-->
       </div>
     </div>
   </div>
@@ -33,7 +32,7 @@ export default {
     return {
       appVersion: remote.app.getVersion()
     };
-  }, 
+  },
   methods:{
     open: function(link) {
     window.open(link, "_blank");

@@ -58,6 +58,25 @@ electron.ipcRenderer.on("about", (arg, event) => {
   }
 });
 
+const BrowserWindow = electron.remote.BrowserWindow;
+
+const win = new BrowserWindow();
+
+win.webContents.session.webRequest.onBeforeSendHeaders(
+  (details, callback) => {
+    callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
+  },
+);
+
+win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  callback({
+    responseHeaders: {
+      'Access-Control-Allow-Origin': ['*'],
+      ...details.responseHeaders,
+    },
+  });
+});
+
 Vue.use(Buefy, {
   defaultIconPack: "fa"
 });

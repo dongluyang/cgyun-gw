@@ -1,6 +1,6 @@
 <div align="center">
 <br>
-<img width="400" src="/src/assets/img/code-notes-logo-black-full.png" alt="electron-vue">
+<img width="400" src="/src/assets/img/cgyun-gw-logo-black-full.png" alt="electron-vue">
 <br>
 <br>
 </div>

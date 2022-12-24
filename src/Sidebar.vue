@@ -1,44 +1,23 @@
 <template>
   <aside class="menu">
     <p class="menu-label">
-      Notes
+      导航
     </p>
     <ul class="menu-list">
       <li>
         <a
           :class="{ 'is-active': !gistsSelected }"
-          @click="selectGistsSidebar(false)"
-          >Local
-          <b-icon icon="laptop" class="is-pulled-right"></b-icon>
+          @click="selectWhiteList(false)"
+          >白名单
+          <b-icon icon="wifi" class="is-pulled-right"></b-icon>
         </a>
       </li>
       <li>
         <a
           :class="{ 'is-active': gistsSelected }"
           @click="selectGistsSidebar(true)"
-          >Gists
-          <b-icon icon="github" class="is-pulled-right"></b-icon>
-        </a>
-      </li>
-    </ul>
-    <p class="menu-label" v-if="!isLoading">
-      Languages
-    </p>
-    <ul class="menu-list" id="menu-list-languages" v-if="!isLoading">
-      <li>
-        <a
-          :class="{ 'is-active': languageSelected === 'all' }"
-          @click="selectLanguageSidebar('all')"
-          >All
-          <b-tag class="is-pulled-right" type="is-dark">{{ totalFiles }}</b-tag>
-        </a>
-      </li>
-      <li v-for="(list, value) in Array.from(languages)" :key="value">
-        <a
-          :class="{ 'is-active': languageSelected === list[0] }"
-          @click="selectLanguageSidebar(list[0])"
-          >{{ list[0] | capitalize }}
-          <b-tag class="is-pulled-right" type="is-dark">{{ list[1] }}</b-tag>
+          >数据管理
+          <b-icon icon="tasks" class="is-pulled-right"></b-icon>
         </a>
       </li>
     </ul>
@@ -51,12 +30,17 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "cn-sidebar",
   methods: {
-    ...mapActions(["selectLanguage", "selectGists"]),
+    ...mapActions(["selectLanguage", "selectGists","selectWhite"]),
     selectLanguageSidebar(language) {
       this.selectLanguage(language);
     },
     selectGistsSidebar(gistsSelected) {
       this.selectGists(gistsSelected);
+    },
+    selectWhiteList(gistsSelected) {
+      console.log(gistsSelected)
+      this.selectWhite(gistsSelected)
+      this.$router.push("/white").catch(()=>{});
     }
   },
   computed: {
