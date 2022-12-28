@@ -8,6 +8,9 @@
         </div>
         <div class="column is-9">
           <router-view></router-view>
+          <div style="margin-top: 50%">
+            ©2017-{{new Date().getFullYear()}} 数字视觉云（北京）科技发展有限公司 All Rights Reserved
+          </div>
         </div>
       </div>
     </div>

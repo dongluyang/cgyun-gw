@@ -1,5 +1,5 @@
 <template>
-  <div id="notes-list" style="margin-top: 72px;">
+  <div v-if="this.serviceReady" style="margin-top: 100px;">
     <b-tabs>
       <b-tab-item label="Socks代理" icon="share">
         {{this.proxies['socks']}}
@@ -21,6 +21,9 @@
       </b-tab-item>
     </b-tabs>
   </div>
+  <div v-else style="margin-top: 100px;color: red">
+     代理服务未启动,请先启动服务CGGW
+  </div>
 </template>
 
 <script>
@@ -29,13 +32,20 @@ export default {
   name: "home-page",
   data() {
     return {
-      proxies:{}
+      proxies:{},
+      serviceReady:true
     };
   },
   mounted() {
+    var _this = this
     this.$http.get("http://127.0.0.1:9300/list_proxy").then(response=>{
-      this.proxies = response.data.Value;
-    })
+      this.proxies = response.data.Value
+      this.serviceReady = true
+    }).catch(function(err) {
+      // 处理前面三个Promise产生的错误
+      console.log(err)
+      _this.serviceReady = false
+    });
   },
   methods: {
     onCopy: function (e) {
