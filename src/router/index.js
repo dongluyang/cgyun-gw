@@ -7,8 +7,10 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "cn-notes-list",
-      component: require("@/components/notes-list/NotesList").default
+      name: "home",
+      component: require("@/components/home/index").default
+      // name: "cn-notes-list",
+      // component: require("@/components/notes-list/NotesList").default
     },
     {
       path: "/white",

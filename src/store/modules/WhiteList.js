@@ -20,10 +20,6 @@ const actions = {
       store.commit("SET_DOMAINLIST", response.data.Value);
     })
   },
-  selectWhite(store, gists) {
-    store.commit("SELECT_GISTS", gists);
-    store.dispatch("loadDomainList");
-  }
 };
 
 const getters = {

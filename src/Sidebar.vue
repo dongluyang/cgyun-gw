@@ -6,20 +6,38 @@
     <ul class="menu-list">
       <li>
         <a
-          :class="{ 'is-active': !gistsSelected }"
-          @click="selectWhiteList(false)"
+          :class="{ 'is-active': getMenuIndex==0 }"
+          @click="selectMenuSidebar(0)"
+        >首页
+          <b-icon icon="home" class="is-pulled-right"></b-icon>
+        </a>
+      </li>
+      <li>
+        <a
+          :class="{ 'is-active': getMenuIndex==1 }"
+          @click="selectMenuSidebar(1)"
           >白名单
           <b-icon icon="wifi" class="is-pulled-right"></b-icon>
         </a>
       </li>
       <li>
         <a
-          :class="{ 'is-active': gistsSelected }"
-          @click="selectGistsSidebar(true)"
+          :class="{ 'is-active': getMenuIndex==2 }"
+          @click="selectMenuSidebar(2)"
           >数据管理
           <b-icon icon="tasks" class="is-pulled-right"></b-icon>
         </a>
       </li>
+
+      <li>
+        <a
+          :class="{ 'is-active': getMenuIndex==3 }"
+          @click="selectMenuSidebar(3)"
+        >渲染管理
+          <b-icon icon="cloud-upload" class="is-pulled-right"></b-icon>
+        </a>
+      </li>
+
     </ul>
   </aside>
 </template>
@@ -30,27 +48,24 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "cn-sidebar",
   methods: {
-    ...mapActions(["selectLanguage", "selectGists","selectWhite"]),
+    ...mapActions(["selectLanguage","loadDomainList"]),
     selectLanguageSidebar(language) {
       this.selectLanguage(language);
     },
-    selectGistsSidebar(gistsSelected) {
-      this.selectGists(gistsSelected);
+    selectMenuSidebar(menuIndex) {
+      this.$store.commit("SET_MENU_INDEX",menuIndex)
+      if (menuIndex ==0) {
+        this.$router.push("/").catch(()=>{});
+      } else if (menuIndex ==1) {
+        this.loadDomainList()
+        this.$router.push("/white").catch(()=>{});
+      }
     },
-    selectWhiteList(gistsSelected) {
-      console.log(gistsSelected)
-      this.selectWhite(gistsSelected)
-      this.$router.push("/white").catch(()=>{});
-    }
   },
   computed: {
     ...mapGetters([
       "languages",
-      "notes",
-      "languageSelected",
-      "totalFiles",
-      "gistsSelected",
-      "isLoading"
+      "getMenuIndex"
     ])
   }
 };

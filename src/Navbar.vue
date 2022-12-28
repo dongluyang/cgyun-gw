@@ -3,18 +3,18 @@
     <img
       class="logo"
       src="~@/assets/img/cgyun-gw-logo-white-full.png"
-      alt="Code Notes logo"
+      alt="CGYun GateWay logo"
     />
 
-    <div class="is-pulled-right">
-      <a
-        id="github"
-        @click="open('https://github.com/lauthieb/code-notes')"
-        title="Github"
-      >
-        <b-icon icon="github"></b-icon>
-      </a>
-    </div>
+<!--    <div class="is-pulled-right">-->
+<!--      <a-->
+<!--        id="github"-->
+<!--        @click="open('https://github.com/lauthieb/code-notes')"-->
+<!--        title="Github"-->
+<!--      >-->
+<!--        <b-icon icon="github"></b-icon>-->
+<!--      </a>-->
+<!--    </div>-->
 
     <div class="is-pulled-right">
       <a id="help" @click="aboutModalActive = true" title="About">
@@ -22,11 +22,11 @@
       </a>
     </div>
 
-    <div class="is-pulled-right">
-      <a id="help" @click="helpTokenModalActive = true" title="Help">
-        <b-icon icon="question-circle"></b-icon>
-      </a>
-    </div>
+<!--    <div class="is-pulled-right">-->
+<!--      <a id="help" @click="helpTokenModalActive = true" title="Help">-->
+<!--        <b-icon icon="question-circle"></b-icon>-->
+<!--      </a>-->
+<!--    </div>-->
 
     <b-modal :active.sync="aboutModalActive" has-modal-card>
       <cn-about-modal></cn-about-modal>
