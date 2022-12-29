@@ -30,7 +30,7 @@ module.exports = {
       externals: ["nedb"],
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder
-        productName: "Code Notes",
+        productName: "CgYun GateWay",
         appId: "fr.lauthieb.code-notes",
         directories: {
           output: "build"
