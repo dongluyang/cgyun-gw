@@ -1,39 +1,48 @@
 <template>
-  <div v-if="this.serviceReady" style="margin-top: 100px;">
-    <b-tabs>
-      <b-tab-item label="Socks代理" icon="share">
-        {{this.proxies['socks']}}
-        <b-button type="button"
-                  size="is-small"
-                  icon-right="copy"
-                v-clipboard:copy="this.proxies['socks']"
-                v-clipboard:success="onCopy"
-                v-clipboard:error="onError"></b-button>
-      </b-tab-item>
-      <b-tab-item label="Http(s)代理" icon="yelp">{{this.proxies['proxy']}}
-
-        <b-button type="button"
-                  size="is-small"
-                  icon-right="copy"
-                  v-clipboard:copy="this.proxies['proxy']"
+  <div>
+    <div v-if="this.serviceReady" style="margin-top: 100px;">
+      <b-tabs>
+        <b-tab-item label="Socks代理" icon="share">
+          {{this.proxies['socks']}}
+          <b-button type="button"
+                    size="is-small"
+                    icon-right="copy"
+                  v-clipboard:copy="this.proxies['socks']"
                   v-clipboard:success="onCopy"
                   v-clipboard:error="onError"></b-button>
-      </b-tab-item>
-    </b-tabs>
-  </div>
-  <div v-else style="margin-top: 100px;color: red">
-     代理服务未启动,请先启动服务CGGW
+        </b-tab-item>
+        <b-tab-item label="Http(s)代理" icon="yelp">{{this.proxies['proxy']}}
+
+          <b-button type="button"
+                    size="is-small"
+                    icon-right="copy"
+                    v-clipboard:copy="this.proxies['proxy']"
+                    v-clipboard:success="onCopy"
+                    v-clipboard:error="onError"></b-button>
+        </b-tab-item>
+      </b-tabs>
+    </div>
+    <div v-else style="margin-top: 100px;color: red">
+       代理服务未启动,请先启动服务CGGW
+    </div>
+    <b-modal :active.sync="aboutModalActive" has-modal-card>
+      <cn-about-modal></cn-about-modal>
+    </b-modal>
   </div>
 </template>
 
 <script>
-
+import AboutModal from "../modals/about-modal/AboutModal";
 export default {
   name: "home-page",
+  components: {
+    "cn-about-modal": AboutModal
+  },
   data() {
     return {
       proxies:{},
-      serviceReady:true
+      serviceReady:true,
+      aboutModalActive:false
     };
   },
   mounted() {
