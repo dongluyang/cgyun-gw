@@ -27,6 +27,7 @@ module.exports = {
     electronBuilder: {
       nodeIntegration: true,
       mainProcessFile: "src/background.js",
+      preload: "src/preload.js",
       externals: ["nedb"],
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder

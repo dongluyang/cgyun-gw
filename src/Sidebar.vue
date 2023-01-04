@@ -59,6 +59,8 @@ export default {
       } else if (menuIndex ==1) {
         this.loadDomainList()
         this.$router.push("/white").catch(()=>{});
+      } else if (menuIndex ==2) {
+        this.$router.push("/datajob").catch(()=>{});
       }
     },
   },

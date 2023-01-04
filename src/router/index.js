@@ -17,5 +17,10 @@ export default new Router({
       name: "white-list",
       component: (resolve) => require(['@/components/white/DomainAndIpList'], resolve)
     },
+    {
+      path: "/datajob",
+      name: "data-job",
+      component: (resolve) => require(['@/components/data-job/index'], resolve)
+    },
   ]
 });
