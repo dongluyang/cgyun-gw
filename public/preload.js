@@ -6,4 +6,3 @@
 // import { ipcRenderer } from 'electron'
 const {ipcRenderer } = require('electron')
 window.ipcRenderer = ipcRenderer
-alert("It Worked!")

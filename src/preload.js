@@ -6,8 +6,7 @@
 // import { ipcRenderer } from 'electron'
 const {ipcRenderer } = require('electron')
 window.ipcRenderer = ipcRenderer
-ipcRenderer.handle('upload:data', uploadData)
-function uploadData(param) {
-  console.log(param)
-}
-alert("It Worked!")
+// ipcRenderer.handle('upload:data', uploadData)
+// function uploadData(param) {
+//   console.log(param)
+// }

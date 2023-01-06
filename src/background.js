@@ -99,12 +99,8 @@ function createWindow() {
 }
 
 async function handleFileOpen() {
-  // const { canceled, filePaths } = await dialog.showOpenDialog()
-  // if (canceled) {
-  //   return
-  // } else {
-  //   return filePaths[0]
-  // }
+
+  /*
   dialog.showOpenDialog({
     title: '选择发送的文件',
     properties: ['openFile', 'multiSelections']
@@ -113,6 +109,8 @@ async function handleFileOpen() {
       // 选择文件弹窗选择多个大文件，每个文件都要去分片
       // eslint-disable-next-line no-unused-vars
       result.filePaths.forEach((filePath,index) => {
+        //获取文件名
+        const fileName = filePath.substr(filePath.lastIndexOf("/")+1)
         // 每个分片文件流的大小
         const chunkSize = 20*1024*1024
         // fs读取整个文件流
@@ -149,7 +147,7 @@ async function handleFileOpen() {
             // 用递归的方式去分片
             let param = {}
             param.size = cuSize
-            param.name = filePath
+            param.name = fileName
             param.total = size
             win.webContents.send("upload:data", param);
             if(i+1 < pieces){
@@ -160,7 +158,29 @@ async function handleFileOpen() {
         }
       })
     }
+  })*/
+  const files = []
+
+  await dialog.showOpenDialog({
+    title: '选择发送的文件',
+    properties: ['openFile', 'multiSelections']
+  }).then(result => {
+    if (result.filePaths && result.filePaths[0]) {
+      // 选择文件弹窗选择多个大文件，每个文件都要去分片
+      result.filePaths.forEach((filePath,index) => {
+        //获取文件名
+        const fileName = filePath.substr(filePath.lastIndexOf("/")+1)
+        // fs读取整个文件流
+        const stats = fs.statSync(filePath)
+        // 文件的总大小
+        const size = stats.size
+        files.push({"id":index+1,"file_name":fileName,"file_size":size,"upload_progress":0})
+      })
+    }
   })
+
+ return files
+
 }
 
 
