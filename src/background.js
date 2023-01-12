@@ -183,6 +183,94 @@ async function handleFileOpen() {
 
 }
 
+async function handleExcelOpen() {
+
+  /*
+  dialog.showOpenDialog({
+    title: '选择发送的文件',
+    properties: ['openFile', 'multiSelections']
+  }).then(result => {
+    if (result.filePaths && result.filePaths[0]) {
+      // 选择文件弹窗选择多个大文件，每个文件都要去分片
+      // eslint-disable-next-line no-unused-vars
+      result.filePaths.forEach((filePath,index) => {
+        //获取文件名
+        const fileName = filePath.substr(filePath.lastIndexOf("/")+1)
+        // 每个分片文件流的大小
+        const chunkSize = 20*1024*1024
+        // fs读取整个文件流
+        const stats = fs.statSync(filePath)
+        // 文件的总大小
+        const size = stats.size
+        // 文件分成了多少个分片
+        const pieces = Math.ceil(size / chunkSize)
+        // const fileIndex = index
+        // 此处省略代码，把文件路径、文件号、文件大小、分片数传输给渲染进程
+        // 以下为关键代码，注意，这里必须使用递归，如果使用for循环，可能会导致分片传输给后台的顺序不对，导致合并文件出错
+        AAA(0)
+        function AAA(i){
+          // 每个分片结束位置
+          const enddata = Math.min(size, (i+1)*chunkSize)
+          //  arr存储每个分片的文件流
+          let arr = []
+          // cuSize 存储当前分片的实际文件大小
+          let cuSize = 0
+          // const chunkIndex = i
+          // 获取当前分片从开始到结束的文件流
+          const readStream = fs.createReadStream(filePath, {
+            start: i * chunkSize,
+            end:enddata - 1
+          })
+          // on data读取数据
+          readStream.on('data', (data) => {
+            cuSize += data.length
+            arr.push(data)
+          })
+          //on end在该分片读取完成时触发
+          readStream.on('end',()=>{
+            // 此处省略代码，把当前分片的文件流、分片ID号、文件ID号、文件路径、当前分片实际大小传输给渲染进程
+            // 用递归的方式去分片
+            let param = {}
+            param.size = cuSize
+            param.name = fileName
+            param.total = size
+            win.webContents.send("upload:data", param);
+            if(i+1 < pieces){
+              AAA(i+1)
+            }
+
+          })
+        }
+      })
+    }
+  })*/
+  const files = []
+
+  await dialog.showOpenDialog({
+    title: '选择发送的文件',
+    properties: ['openFile'],
+    filters: [
+      { name: 'Custom File Type', extensions: ['xlsx'] },
+    ]
+  }).then(result => {
+    if (result.filePaths && result.filePaths[0]) {
+      // 选择文件弹窗选择多个大文件，每个文件都要去分片
+      result.filePaths.forEach((filePath,index) => {
+        //获取文件名
+        const fileName = filePath.substr(filePath.lastIndexOf("/")+1)
+        // fs读取整个文件流
+        const stats = fs.statSync(filePath)
+        // 文件的总大小
+        const size = stats.size
+        files.push({"id":index+1,"file_name":fileName,"file_size":size,"upload_progress":0})
+      })
+    }
+  })
+
+  return files
+
+}
+
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -219,6 +307,7 @@ app.on("ready", async () => {
     // }
   }
   ipcMain.handle('dialog:openFile', handleFileOpen)
+  ipcMain.handle('dialog:openExcel', handleExcelOpen)
   createWindow();
 });
 
