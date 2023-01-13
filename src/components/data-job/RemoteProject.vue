@@ -6,22 +6,23 @@
           role="button"
           aria-controls="contentIdForA11y3">
           <p class="card-header-title">
-            <template v-if="!loading">{{project.name}}</template>
+            <template v-if="!loading">{{project.alias}}({{project.name}})</template>
             <b-skeleton size="is-large" :active="loading"></b-skeleton>
           </p>
         </div>
         <div class="card-content">
           <div class="content">
             <template v-if="!loading">
-              <a>{{project.alias}}</a>.
+              <img :src="project.image" />
             </template>
             <b-skeleton size="is-large" :active="loading" :count="2"></b-skeleton>
           </div>
         </div>
         <footer class="card-footer">
           <a class="card-footer-item">
-            <template v-if="!loading">选择</template>
-            <b-skeleton size="is-large" :active="loading"></b-skeleton>
+            <b-button type="is-primary" @click="selectProject(project)">选择</b-button>
+<!--            <template v-if="!loading">选择</template>-->
+<!--            <b-skeleton size="is-large" :active="loading"></b-skeleton>-->
           </a>
         </footer>
       </div>
@@ -42,32 +43,22 @@ data(){
   },
   methods: {
     listProjects() {
-      this.$http.post("http://newsightcgteam.cgyun.cn:18889/cgteam/cgteam/getAllProjects").then(response=>{
-        let obj = {};
-        let res = response.data
-        let data = res.reduce((cur, next) => {
-          obj[next.project] ? '' : (obj[next.project] = true && (cur += next.project + ','));
-          return cur;
-        }, '');
-        this.getParentProjectList(data,"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzM4NDk5NzgsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiMTZlNGE5ZGEtYWU5Mi00M2YwLTlmODYtYTNjNzI4YjE2ZDNiIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.iWD3z4ziP2RSMoa0jofRJkCO-dbbR-Kka7CJdMPbnNQ")
-      })
-    },
-    getParentProjectList(data,token) {
-
-      this.$http.post("http://newsightcgteam.cgyun.cn:18889/cgteam/cgteam/getRemoteProject",
-        { projects: data, token: token}).then(response=>{
+      this.$http.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
+        {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
         const res = response.data
         const list = res.data;
         for (let i = 0; i < list.length; i++) {
           this.projectList.push({
-            id: i,
-            name: list[i].name,
-            alias: list[i].name,
-            image: list[i].coverUrl,
+            id: list[i].project.id,
+            name: list[i].project.name,
+            alias: list[i].project.alias,
+            image: list[i].content,
           });
         }
-      });
-
+      })
+    },
+    selectProject(project) {
+      this.$emit('selectProject', project)
     }
   }
 }

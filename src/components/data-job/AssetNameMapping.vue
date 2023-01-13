@@ -1,5 +1,9 @@
 <template>
 <div>
+  <b-taglist v-if="project!=null">
+    <b-tag type="is-info">{{project.alias}}</b-tag>
+    <b-tag type="is-info">{{project.name}}</b-tag>
+  </b-taglist>
   <div class="buttons">
     <b-button type="is-primary" size="is-small" @click="openDialog" >添加</b-button>
     <b-button type="is-primary" size="is-small" @click="importData" >导入</b-button>
@@ -14,7 +18,7 @@
     aria-label="Example Modal"
     close-button-aria-label="Close"
     aria-modal>
-    <asset-name-mapping-create></asset-name-mapping-create>
+    <asset-name-mapping-create v-if="project!=null" :project-id="project.id" @addEvent="addEventHandler"></asset-name-mapping-create>
   </b-modal>
 
   <b-modal
@@ -87,6 +91,9 @@ import AssetNameMappingCreate from "./AssetNameMappingCreate";
 import AssetNameMappingUpload from './AssetNameMappingUpload'
 export default {
   name: "asset-name-mapping",
+  props:{
+    project:Object
+  },
   components: {
     // ModalForm
     'asset-name-mapping-create':AssetNameMappingCreate,
@@ -94,10 +101,6 @@ export default {
   },
   data() {
     return {
-      formProps: {
-        raw_name: '',
-        new_name: ''
-      },
       stickyHeaders: true,
       isAdd: false,
       isBatchAdd:false,
@@ -137,6 +140,24 @@ export default {
     },
     importData() {
       this.isBatchAdd = true
+    },
+    addEventHandler() {
+      this.$http.get("http://cgyun.cn/cgproxy/system/rename/list",
+        {projectId:this.project.id},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
+        const res = response.data
+        this.data = res.data
+      })
+    }
+  },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    project(oldValue, newValue) {
+      this.$http.get("http://cgyun.cn/cgproxy/system/rename/list",
+        {projectId: this.project.id}, {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response => {
+        const res = response.data
+        this.data = res.data
+      })
+
     }
   }
 }

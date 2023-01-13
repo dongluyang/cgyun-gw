@@ -11,10 +11,10 @@
     :label-position="labelPosition"
     :mobile-mode="mobileMode">
     <b-step-item step="1" label="选择项目" :clickable="isStepsClickable">
-      <remote-project></remote-project>
+      <remote-project @selectProject="setProject"></remote-project>
     </b-step-item>
     <b-step-item step="2" label="资产命名映射" :clickable="isStepsClickable">
-      <asset-name-mapping></asset-name-mapping>
+      <asset-name-mapping :project="project"></asset-name-mapping>
     </b-step-item>
 
     <b-step-item step="3" label="文件处理并上传" :clickable="isStepsClickable" :type="{'is-success': isProfileSuccess}">
@@ -95,16 +95,13 @@ export default {
   data() {
     return {
       activeStep: 0,
-
       showSocial: false,
       isAnimated: true,
       isRounded: true,
       isStepsClickable: false,
-
       hasNavigation: true,
       customNavigation: false,
       isProfileSuccess: false,
-
       prevIcon: 'chevron-left',
       nextIcon: 'chevron-right',
       labelPosition: 'bottom',
@@ -114,6 +111,7 @@ export default {
       isPaginated: true,
       isPaginationSimple: false,
       isPaginationRounded: false,
+      project:null,
       data:[],
       checkedRows:[],
       columns: [
@@ -157,6 +155,11 @@ methods: {
   },
   uploadFile(row) {
     window.ipcRenderer.invoke('upload:start',row)
+  },
+  setProject(project) {
+    this.project = project
+    console.log(project)
+    this.activeStep = 1
   }
 }
 }

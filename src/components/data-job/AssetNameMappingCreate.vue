@@ -11,7 +11,7 @@
       <section class="modal-card-body">
         <b-field label="原名称">
           <b-input
-            v-model="formProps.raw_name"
+            v-model="formProps.rawName"
             placeholder="资产原名称"
             validation-message="资产原名称必填"
             required>
@@ -20,7 +20,7 @@
 
         <b-field label="新名称">
           <b-input
-            v-model="formProps.new_name"
+            v-model="formProps.newName"
             placeholder="重命名后名称"
             validation-message="重命名后名称必填"
             required>
@@ -45,21 +45,35 @@
 <script>
 export default {
   name: "AssetNameMappingCreate",
+  props:{
+    projectId:Number
+  },
   data() {
     return {
       formProps: {
-        raw_name: '',
-        new_name: ''
+        rawName: '',
+        newName: ''
+
       },
     }
   },
   methods:{
     submitMapping() {
-      if (this.formProps.raw_name.trim().length==0 ||
-          this.formProps.new_name.trim().length==0) {
+      if (this.formProps.rawName.trim().length==0 ||
+          this.formProps.newName.trim().length==0) {
         return
       }
-      alert("1111")
+      this.$http.post("http://cgyun.cn/cgproxy/system/rename",
+        {projectId:this.projectId,...this.formProps},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
+        const res = response.data
+        if (res.code==200) {
+          this.$buefy.toast.open({
+            message: '添加成功!',
+            type: 'is-success'
+          })
+          this.$emit("addEvent")
+        }
+      })
     }
   }
 }
