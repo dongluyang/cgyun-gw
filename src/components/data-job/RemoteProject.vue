@@ -42,20 +42,22 @@ data(){
     this.listProjects()
   },
   methods: {
-    listProjects() {
-      this.$http.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
-        {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
-        const res = response.data
-        const list = res.data;
-        for (let i = 0; i < list.length; i++) {
-          this.projectList.push({
-            id: list[i].project.id,
-            name: list[i].project.name,
-            alias: list[i].project.alias,
-            image: list[i].content,
-          });
-        }
-      })
+    async listProjects() {
+      // this.$http.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
+      //   {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
+      //   const res = response.data
+      //   const list = res.data;
+      //   for (let i = 0; i < list.length; i++) {
+      //     this.projectList.push({
+      //       id: list[i].project.id,
+      //       name: list[i].project.name,
+      //       alias: list[i].project.alias,
+      //       image: list[i].content,
+      //     });
+      //   }
+      // })
+      this.projectList = await window.ipcRenderer.invoke('project:list',
+        {clientId: "renyuteamcgteam"})
     },
     selectProject(project) {
       this.$emit('selectProject', project)

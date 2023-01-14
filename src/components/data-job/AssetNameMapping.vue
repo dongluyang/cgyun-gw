@@ -37,56 +37,33 @@
 
   <b-table
     :data="data"
-    :columns="columns"
-    :sticky-header="stickyHeaders"
-  ></b-table>
+    paginated
+    backend-pagination
+    :total="total"
+    :per-page="perPage"
+    @page-change="onPageChange"
+    :current-page.sync="currentPage">
+    <template slot-scope="props">
+      <b-table-column  field="id" label="ID" width="40">
+        {{props.row.id}}
+      </b-table-column>
+      <b-table-column  field="rawName" label="原名称">
+        {{props.row.rawName}}
+      </b-table-column>
+      <b-table-column  field="newName" label="新名称">
+        {{props.row.newName}}
+      </b-table-column>
+      <b-table-column field="action" label="操作" width="200">
+        <div class="buttons">
+          <b-button type="is-danger" size="is-small" @click="deleteAssetRename(props.row)">删除</b-button>
+        </div>
+      </b-table-column>
+    </template>
+  </b-table>
 </div>
 </template>
 
 <script>
-// const ModalForm = {
-//   props: ['canCancel'],
-//   template: `
-//             <form action="">
-//                 <div class="modal-card" style="width: auto">
-//                     <header class="modal-card-head">
-//                         <p class="modal-card-title">资产名称映射</p>
-//                         <button
-//                             type="button"
-//                             class="delete"
-//                             @click="this.$emit('close')"/>
-//                     </header>
-//                     <section class="modal-card-body">
-//                         <b-field label="原名称">
-//                             <b-input
-//                                 :value="raw_name"
-//                                 placeholder="资产原名称"
-//                                 required>
-//                             </b-input>
-//                         </b-field>
-//
-//                         <b-field label="新名称">
-//                             <b-input
-//                                 :value="new_name"
-//                                 placeholder="重命名后名称"
-//                                 required>
-//                             </b-input>
-//                         </b-field>
-//
-//                     </section>
-//                     <footer class="modal-card-foot">
-//                         <b-button
-//                             label="关闭"
-//                             @click="this.$emit('close')" />
-//                         <b-button
-//                             label="提交"
-//                             type="is-primary"
-//                             @click="submitMapping" />
-//                     </footer>
-//                 </div>
-//             </form>
-//         `
-// }
 import AssetNameMappingCreate from "./AssetNameMappingCreate";
 import AssetNameMappingUpload from './AssetNameMappingUpload'
 export default {
@@ -95,14 +72,17 @@ export default {
     project:Object
   },
   components: {
-    // ModalForm
     'asset-name-mapping-create':AssetNameMappingCreate,
     'asset-name-mapping-upload':AssetNameMappingUpload
   },
   data() {
     return {
-      stickyHeaders: true,
+      currentPage: 1,
+      perPage: 2,
+      isPaginationSimple: false,
+      isPaginationRounded: false,
       isAdd: false,
+      total:0,
       isBatchAdd:false,
       data:[],
       columns: [
@@ -116,7 +96,7 @@ export default {
           cellClass: "is-sticky-column-one"
         },
         {
-          field: "raw_name",
+          field: "rawName",
           label: "原名称",
           centered: true,
           sticky: true,
@@ -124,7 +104,7 @@ export default {
           cellClass: "is-sticky-column-two"
         },
         {
-          field: "new_name",
+          field: "newName",
           label: "新名称",
           centered: true,
           sticky: true,
@@ -141,23 +121,33 @@ export default {
     importData() {
       this.isBatchAdd = true
     },
-    addEventHandler() {
-      this.$http.get("http://cgyun.cn/cgproxy/system/rename/list",
-        {projectId:this.project.id},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
-        const res = response.data
-        this.data = res.data
-      })
-    }
+    async addEventHandler() {
+      let result = await window.ipcRenderer.invoke('asset:list',
+        {projectId:this.project.id,page:this.currentPage,pageSize:this.perPage})
+      console.log(result)
+      this.data = result.list
+      this.total = result.total
+    },
+    deleteAssetRename() {
+
+    },
+    /*
+     * Handle page-change event
+     */
+    onPageChange(page) {
+      this.currentPage = page
+      this.addEventHandler()
+    },
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
-    project(oldValue, newValue) {
-      this.$http.get("http://cgyun.cn/cgproxy/system/rename/list",
-        {projectId: this.project.id}, {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response => {
-        const res = response.data
-        this.data = res.data
-      })
-
+    async project(oldValue, newValue) {
+      // this.$http.get("http://cgyun.cn/cgproxy/system/rename/list",
+      //   {projectId: this.project.id}, {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response => {
+      //   const res = response.data
+      //   this.data = res.data
+      // })
+      await this.addEventHandler()
     }
   }
 }

@@ -3,6 +3,7 @@
 import { app, protocol, Menu, BrowserWindow,dialog,ipcMain } from "electron";
 import path from 'path'
 import fs from 'fs'
+import axios from "axios";
 import {
   createProtocol
   /* installVueDevtools */
@@ -271,6 +272,40 @@ async function handleExcelOpen() {
 
 }
 
+async function handleAssetList(e,param) {
+  console.log('ipcMain received: ' + param);
+  let assetList = []
+  let total = 0
+  await axios.get("http://cgyun.cn/cgproxy/system/rename/list?projectId="
+    +param.projectId+"&pageNum="+param.page+"&pageSize="+param.pageSize,
+    {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMDIxMDQsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiOTc1MmEwM2UtZTZiNi00MTVhLTg5MDQtMWFhMzliNDEzYTBkIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.AmDaNUYCWqzrruj7WMryDwTUZ0AnHIIUjrFgNBFwtGc"}}).then(response => {
+    const res = response.data
+    assetList = res.rows
+    total = res.total
+  })
+
+  return {list:assetList,total:total}
+}
+
+async function handleProjectList(e,param) {
+  console.log('ipcMain received: ' + param);
+  let projectList = []
+  await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
+    {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMDIxMDQsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiOTc1MmEwM2UtZTZiNi00MTVhLTg5MDQtMWFhMzliNDEzYTBkIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.AmDaNUYCWqzrruj7WMryDwTUZ0AnHIIUjrFgNBFwtGc"}}).then(response => {
+    const res = response.data
+    const list = res.data;
+    for (let i = 0; i < list.length; i++) {
+      projectList.push({
+        id: list[i].project.id,
+        name: list[i].project.name,
+        alias: list[i].project.alias,
+        image: list[i].content,
+      })
+  }})
+
+  return projectList
+}
+
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -308,6 +343,9 @@ app.on("ready", async () => {
   }
   ipcMain.handle('dialog:openFile', handleFileOpen)
   ipcMain.handle('dialog:openExcel', handleExcelOpen)
+  ipcMain.handle('asset:list',handleAssetList)
+  ipcMain.handle('project:list',handleProjectList)
+
   createWindow();
 });
 
