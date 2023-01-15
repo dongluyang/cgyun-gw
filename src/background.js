@@ -272,13 +272,26 @@ async function handleExcelOpen() {
 
 }
 
+
+async function handleAssetDelete(e,id) {
+  console.log('ipcMain received: ' + id);
+  let code = 0;
+  await axios.delete("http://cgyun.cn/cgproxy/system/rename/"+id,
+    {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMTg2NjIsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiNDg0ZGYxMTQtZjhmYy00Yzg4LWJkZGEtZmUzNTIwNDZhNGQwIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.1dQgMbWSqVSIZVUam9KdMpXj4VEyc35EljdF6fAm5BQ"}}).then(response => {
+    const res = response.data
+    code = res.code
+  })
+
+  return code
+}
+
 async function handleAssetList(e,param) {
   console.log('ipcMain received: ' + param);
   let assetList = []
   let total = 0
   await axios.get("http://cgyun.cn/cgproxy/system/rename/list?projectId="
     +param.projectId+"&pageNum="+param.page+"&pageSize="+param.pageSize,
-    {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMDIxMDQsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiOTc1MmEwM2UtZTZiNi00MTVhLTg5MDQtMWFhMzliNDEzYTBkIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.AmDaNUYCWqzrruj7WMryDwTUZ0AnHIIUjrFgNBFwtGc"}}).then(response => {
+    {headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMTg2NjIsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiNDg0ZGYxMTQtZjhmYy00Yzg4LWJkZGEtZmUzNTIwNDZhNGQwIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.1dQgMbWSqVSIZVUam9KdMpXj4VEyc35EljdF6fAm5BQ"}}).then(response => {
     const res = response.data
     assetList = res.rows
     total = res.total
@@ -291,7 +304,7 @@ async function handleProjectList(e,param) {
   console.log('ipcMain received: ' + param);
   let projectList = []
   await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
-    {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMDIxMDQsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiOTc1MmEwM2UtZTZiNi00MTVhLTg5MDQtMWFhMzliNDEzYTBkIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.AmDaNUYCWqzrruj7WMryDwTUZ0AnHIIUjrFgNBFwtGc"}}).then(response => {
+    {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMTg2NjIsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiNDg0ZGYxMTQtZjhmYy00Yzg4LWJkZGEtZmUzNTIwNDZhNGQwIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.1dQgMbWSqVSIZVUam9KdMpXj4VEyc35EljdF6fAm5BQ"}}).then(response => {
     const res = response.data
     const list = res.data;
     for (let i = 0; i < list.length; i++) {
@@ -344,7 +357,9 @@ app.on("ready", async () => {
   ipcMain.handle('dialog:openFile', handleFileOpen)
   ipcMain.handle('dialog:openExcel', handleExcelOpen)
   ipcMain.handle('asset:list',handleAssetList)
+  ipcMain.handle('asset:delete',handleAssetDelete)
   ipcMain.handle('project:list',handleProjectList)
+
 
   createWindow();
 });

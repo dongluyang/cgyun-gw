@@ -55,7 +55,7 @@
       </b-table-column>
       <b-table-column field="action" label="操作" width="200">
         <div class="buttons">
-          <b-button type="is-danger" size="is-small" @click="deleteAssetRename(props.row)">删除</b-button>
+          <b-button type="is-danger" size="is-small" @click="deleteAssetRename(props.row.id)">删除</b-button>
         </div>
       </b-table-column>
     </template>
@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      perPage: 2,
+      perPage: 10,
       isPaginationSimple: false,
       isPaginationRounded: false,
       isAdd: false,
@@ -124,11 +124,30 @@ export default {
     async addEventHandler() {
       let result = await window.ipcRenderer.invoke('asset:list',
         {projectId:this.project.id,page:this.currentPage,pageSize:this.perPage})
-      console.log(result)
       this.data = result.list
       this.total = result.total
+      this.isAdd = false
     },
-    deleteAssetRename() {
+    async deleteAssetRename(id) {
+
+      this.$buefy.dialog.confirm({
+        title: '删除重命名',
+        message: '你确定要 <b>删除</b> 这个资产重命名吗? ',
+        confirmText: '删除',
+        cancelText: '取消',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: async () => {
+          let code = await window.ipcRenderer.invoke('asset:delete', id)
+          if (code == 200) {
+            this.currentPage = 1
+            let result = await window.ipcRenderer.invoke('asset:list',
+              {projectId:this.project.id,page:this.currentPage,pageSize:this.perPage})
+            this.data = result.list
+            this.total = result.total
+          }
+        }
+      })
 
     },
     /*

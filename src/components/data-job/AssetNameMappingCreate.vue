@@ -64,7 +64,7 @@ export default {
         return
       }
       this.$http.post("http://cgyun.cn/cgproxy/system/rename",
-        {projectId:this.projectId,...this.formProps},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
+        {projectId:this.projectId,...this.formProps},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMTg2NjIsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiNDg0ZGYxMTQtZjhmYy00Yzg4LWJkZGEtZmUzNTIwNDZhNGQwIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.1dQgMbWSqVSIZVUam9KdMpXj4VEyc35EljdF6fAm5BQ"}}).then(response=>{
         const res = response.data
         if (res.code==200) {
           this.$buefy.toast.open({
