@@ -26,14 +26,22 @@
           </a>
         </footer>
       </div>
-    </div>
+    <b-modal :active.sync="loginModalActive" has-modal-card>
+      <login-modal></login-modal>
+    </b-modal>
+  </div>
 </template>
 
 <script>
+import LoginModal from "../modals/login-modal/LoginModal";
 export default {
 name: "RemoteProject",
+  components: {
+    "login-modal": LoginModal
+  },
 data(){
   return {
+    loginModalActive: false,
     loading: false,
     projectList:[]
   }
@@ -43,21 +51,13 @@ data(){
   },
   methods: {
     async listProjects() {
-      // this.$http.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
-      //   {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQyMDg2MDksInVzZXJfbmFtZSI6ImRlbW91c2VyIiwianRpIjoiMzM1MTljMmUtMWIzNS00ZTBmLTkzNjgtZWYyYWJiNGJjNTE3IiwiaWRlbnRpdHkiOiJkZW1vdXNlciIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.UHcEux9e4by1xpTLzuyMeN-NeMS6mKWbmklawzbAYcU"}}).then(response=>{
-      //   const res = response.data
-      //   const list = res.data;
-      //   for (let i = 0; i < list.length; i++) {
-      //     this.projectList.push({
-      //       id: list[i].project.id,
-      //       name: list[i].project.name,
-      //       alias: list[i].project.alias,
-      //       image: list[i].content,
-      //     });
-      //   }
-      // })
       this.projectList = await window.ipcRenderer.invoke('project:list',
-        {clientId: "renyuteamcgteam"})
+        {clientId: "renyuteamcgteam"}).catch( err => {
+        alert(err)
+      });
+      if (this.projectList instanceof Error) {
+          this.loginModalActive = true
+      }
     },
     selectProject(project) {
       this.$emit('selectProject', project)

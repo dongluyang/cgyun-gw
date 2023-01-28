@@ -302,11 +302,12 @@ async function handleAssetList(e,param) {
 
 async function handleProjectList(e,param) {
   console.log('ipcMain received: ' + param);
-  let projectList = []
-  await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
+
+  return await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
     {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMTg2NjIsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiNDg0ZGYxMTQtZjhmYy00Yzg4LWJkZGEtZmUzNTIwNDZhNGQwIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.1dQgMbWSqVSIZVUam9KdMpXj4VEyc35EljdF6fAm5BQ"}}).then(response => {
     const res = response.data
     const list = res.data;
+    let projectList = []
     for (let i = 0; i < list.length; i++) {
       projectList.push({
         id: list[i].project.id,
@@ -314,9 +315,16 @@ async function handleProjectList(e,param) {
         alias: list[i].project.alias,
         image: list[i].content,
       })
-  }})
+    }
+    return projectList
+    }).catch(err=>{
+    if (err.message=="Request failed with status code 401") {
+      // throw new Error("auth_failed");
+      return new Error("auth_failed")
+    }
+  })
 
-  return projectList
+  // return projectList
 }
 
 
