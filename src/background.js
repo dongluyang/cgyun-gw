@@ -1,9 +1,9 @@
 "use strict";
-
 import { app, protocol, Menu, BrowserWindow,dialog,ipcMain } from "electron";
 import path from 'path'
 import fs from 'fs'
 import axios from "axios";
+import Qs from 'qs';
 import {
   createProtocol
   /* installVueDevtools */
@@ -304,7 +304,7 @@ async function handleProjectList(e,param) {
   console.log('ipcMain received: ' + param);
 
   return await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
-    {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQzMTg2NjIsInVzZXJfbmFtZSI6Inp5IiwianRpIjoiNDg0ZGYxMTQtZjhmYy00Yzg4LWJkZGEtZmUzNTIwNDZhNGQwIiwiaWRlbnRpdHkiOiJ6eSIsImNsaWVudF9pZCI6IkNneXVuQ2xpZW50SWQiLCJzY29wZSI6WyJyZWFkIl19.1dQgMbWSqVSIZVUam9KdMpXj4VEyc35EljdF6fAm5BQ"}}).then(response => {
+    {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + param.accessToken}}).then(response => {
     const res = response.data
     const list = res.data;
     let projectList = []
@@ -325,6 +325,26 @@ async function handleProjectList(e,param) {
   })
 
   // return projectList
+}
+
+
+async function handleLogin(e,param) {
+  const payload='userName='+param.userName+'&password='+param.password
+  const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+  return await axios.post("http://api.cgyun.cn/system/user/login", payload,{ headers: headers }).then(response => {
+    const res = response.data
+    console.log(res)
+    const code = res.code
+    if (code == 200) {
+      const data = res.data;
+      return data
+    } else {
+      return new Error(res.msg)
+    }
+  }).catch(err=>{
+    return err
+  })
+
 }
 
 
@@ -367,7 +387,7 @@ app.on("ready", async () => {
   ipcMain.handle('asset:list',handleAssetList)
   ipcMain.handle('asset:delete',handleAssetDelete)
   ipcMain.handle('project:list',handleProjectList)
-
+  ipcMain.handle('account:login',handleLogin)
 
   createWindow();
 });

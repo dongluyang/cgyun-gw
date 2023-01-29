@@ -27,7 +27,7 @@
         </footer>
       </div>
     <b-modal :active.sync="loginModalActive" has-modal-card>
-      <login-modal></login-modal>
+      <login-modal @hasSuccessDone="listProjects"></login-modal>
     </b-modal>
   </div>
 </template>
@@ -51,12 +51,18 @@ data(){
   },
   methods: {
     async listProjects() {
-      this.projectList = await window.ipcRenderer.invoke('project:list',
-        {clientId: "renyuteamcgteam"}).catch( err => {
-        alert(err)
-      });
-      if (this.projectList instanceof Error) {
+      const accountStr = window.localStorage.getItem("account")
+      if (accountStr!=null) {
+        const account = JSON.parse(accountStr)
+        this.projectList = await window.ipcRenderer.invoke('project:list',
+          {clientId: "renyuteamcgteam",accessToken:account.accessToken}).catch( err => {
+          alert(err)
+        });
+        if (this.projectList instanceof Error) {
           this.loginModalActive = true
+        }
+      } else {
+        this.loginModalActive = true
       }
     },
     selectProject(project) {
