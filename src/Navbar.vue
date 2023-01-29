@@ -30,7 +30,7 @@
 
 
     <div class="is-pulled-right" v-if="fullName!=''">
-      <a id="logout" title="Logout">
+      <a id="logout" @click="logoutHandle" title="Logout">
         {{fullName}}
         <b-icon icon="sign-out"></b-icon>
       </a>
@@ -84,6 +84,9 @@ export default {
   methods: {
     open: function(link) {
     window.open(link, "_blank");
+    },
+    logoutHandle() {
+      this.$store.commit('LOGOUT')
     }
   }
 };

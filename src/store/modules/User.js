@@ -14,7 +14,13 @@ const mutations = {
   },
   SET_ACCESSTOKEN(state,accessToken) {
     state.accessToken = accessToken
-  }
+  },
+  LOGOUT(state){
+    window.localStorage.removeItem('userName');
+    window.localStorage.removeItem('account');
+    state.userName = '';
+    state.accessToken = '';
+  },
 };
 
 
