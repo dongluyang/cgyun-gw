@@ -42,6 +42,7 @@ methods: {
         this.msg = ""
         this.$emit('hasSuccessDone', true)
         window.localStorage.setItem("account",JSON.stringify(this.account))
+        this.$store.commit('SET_USERNAME',this.formProps.userName)
       } else {
         this.msg = this.account.message
       }

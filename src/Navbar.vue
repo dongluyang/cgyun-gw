@@ -22,11 +22,21 @@
       </a>
     </div>
 
-<!--    <div class="is-pulled-right">-->
-<!--      <a id="help" @click="helpTokenModalActive = true" title="Help">-->
-<!--        <b-icon icon="question-circle"></b-icon>-->
-<!--      </a>-->
-<!--    </div>-->
+    <div class="is-pulled-right" v-if="fullName==''">
+      <a id="login" @click="loginModalActive = true" title="Login">
+        <b-icon icon="sign-in"></b-icon>
+      </a>
+    </div>
+
+
+    <div class="is-pulled-right" v-if="fullName!=''">
+      <a id="logout" title="Logout">
+        {{fullName}}
+        <b-icon icon="sign-out"></b-icon>
+      </a>
+    </div>
+
+
 
     <b-modal :active.sync="aboutModalActive" has-modal-card>
       <cn-about-modal></cn-about-modal>
@@ -35,6 +45,12 @@
     <b-modal :active.sync="helpTokenModalActive" has-modal-card>
       <cn-help-token-modal></cn-help-token-modal>
     </b-modal>
+
+    <b-modal :active.sync="loginModalActive" has-modal-card>
+      <login-modal @hasSuccessDone="loginModalActive=false"></login-modal>
+    </b-modal>
+
+
   </nav>
 </template>
 
@@ -43,18 +59,27 @@
 import { remote } from "electron";
 import HelpTokenModal from "./components/modals/help-token-modal/HelpTokenModal";
 import AboutModal from "./components/modals/about-modal/AboutModal";
-
+import LoginModal from "@/components/modals/login-modal/LoginModal";
+import { mapGetters } from "vuex";
 export default {
   name: "cn-navbar",
   components: {
     "cn-help-token-modal": HelpTokenModal,
-    "cn-about-modal": AboutModal
+    "cn-about-modal": AboutModal,
+    "login-modal": LoginModal
   },
   data() {
     return {
       helpTokenModalActive: false,
+      loginModalActive:false,
       aboutModalActive: false
     };
+  },
+  computed:{
+    ...mapGetters(["userName"]),
+    fullName() {
+      return this.userName;
+    }
   },
   methods: {
     open: function(link) {
@@ -83,6 +108,8 @@ nav {
 
   #about-code-notes,
   #github,
+  #login,
+  #logout,
   #help {
     color: $light;
     position: relative;
