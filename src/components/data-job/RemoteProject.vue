@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapGetters} from "vuex";
 import LoginModal from "../modals/login-modal/LoginModal";
 export default {
 name: "RemoteProject",
@@ -51,15 +52,16 @@ data(){
   },
   methods: {
     async listProjects() {
-      const accountStr = window.localStorage.getItem("account")
-      if (accountStr!=null) {
-        const account = JSON.parse(accountStr)
+      const accessToken = this.accessToken
+      if (accessToken!=null) {
         this.projectList = await window.ipcRenderer.invoke('project:list',
-          {clientId: "renyuteamcgteam",accessToken:account.accessToken}).catch( err => {
+          {clientId: "renyuteamcgteam",accessToken:accessToken}).catch( err => {
           alert(err)
         });
         if (this.projectList instanceof Error) {
           this.loginModalActive = true
+        } else {
+          this.loginModalActive = false
         }
       } else {
         this.loginModalActive = true
@@ -68,7 +70,12 @@ data(){
     selectProject(project) {
       this.$emit('selectProject', project)
     }
-  }
+  },
+  computed: {
+    ...mapGetters([
+      "accessToken"
+    ]),
+  },
 }
 </script>
 

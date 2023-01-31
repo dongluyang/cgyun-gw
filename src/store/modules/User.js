@@ -1,13 +1,18 @@
 const state = {
   userName: window.localStorage.getItem('userName') == null ? '':window.localStorage.getItem('userName') ,
   accessToken: window.localStorage.getItem('account') == null ? '' : JSON.parse(window.localStorage.getItem('account')).accessToken,
-  teamList:[]
+  teamList:window.localStorage.getItem('account') == null ? '' : JSON.parse(window.localStorage.getItem('account')).teams
 };
 
 const mutations = {
   SET_USERNAME(state, userName) {
     window.localStorage.setItem("userName",userName)
     state.userName = userName;
+  },
+  SET_ACCOUNT(state,account) {
+    window.localStorage.setItem("account",JSON.stringify(account))
+    state.accessToken = account.accessToken
+    state.teamList = account.teamList
   },
   SET_TEAMLIST(state, teamList) {
     state.teamList = teamList;
@@ -20,6 +25,7 @@ const mutations = {
     window.localStorage.removeItem('account');
     state.userName = '';
     state.accessToken = '';
+    state.teamList = [];
   },
 };
 

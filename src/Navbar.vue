@@ -86,7 +86,18 @@ export default {
     window.open(link, "_blank");
     },
     logoutHandle() {
-      this.$store.commit('LOGOUT')
+
+      this.$buefy.dialog.confirm({
+        title:"注销",
+        message: '你确定要退出登录吗？',
+        confirmText: "确定",
+        cancelText: "取消",
+        type: "is-info",
+        hasIcon: true,
+        onConfirm: () => {
+          this.$store.commit('LOGOUT')
+        }
+      });
     }
   }
 };

@@ -40,9 +40,9 @@ methods: {
       });
       if (!(this.account instanceof Error)){
         this.msg = ""
-        this.$emit('hasSuccessDone', true)
-        window.localStorage.setItem("account",JSON.stringify(this.account))
         this.$store.commit('SET_USERNAME',this.formProps.userName)
+        this.$store.commit('SET_ACCOUNT',this.account)
+        this.$emit('hasSuccessDone', true)
       } else {
         this.msg = this.account.message
       }
