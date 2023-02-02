@@ -1,7 +1,7 @@
 const state = {
   userName: window.localStorage.getItem('userName') == null ? '':window.localStorage.getItem('userName') ,
   accessToken: window.localStorage.getItem('account') == null ? '' : JSON.parse(window.localStorage.getItem('account')).accessToken,
-  teamList:window.localStorage.getItem('account') == null ? '' : JSON.parse(window.localStorage.getItem('account')).teams
+  teamList:window.localStorage.getItem('account') == null ? [] : JSON.parse(window.localStorage.getItem('account')).teams
 };
 
 const mutations = {
@@ -10,9 +10,13 @@ const mutations = {
     state.userName = userName;
   },
   SET_ACCOUNT(state,account) {
+    //隐藏敏感数据
+    account.teams.forEach(t=>{
+      t.mongoUrl = ""
+    })
     window.localStorage.setItem("account",JSON.stringify(account))
     state.accessToken = account.accessToken
-    state.teamList = account.teamList
+    state.teamList = account.teams
   },
   SET_TEAMLIST(state, teamList) {
     state.teamList = teamList;

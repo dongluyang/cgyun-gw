@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <b-field
+      label="我的团队">
+      <b-select icon="cloud" @input="listProjects"  v-model="clientId" placeholder="请选择一个团队" expanded>
+        <option v-for="t in this.teamList" :value="t.clientId" :key="t.id">{{t.groupName}}</option>
+      </b-select>
+    </b-field>
       <div class="card" aria-id="contentIdForA11y3" :key="index" v-for="(project, index) in projectList" >
         <div
           class="card-header"
@@ -44,7 +50,8 @@ data(){
   return {
     loginModalActive: false,
     loading: false,
-    projectList:[]
+    projectList:[],
+    clientId:null
   }
 },
   mounted() {
@@ -54,15 +61,19 @@ data(){
     async listProjects() {
       const accessToken = this.accessToken
       if (accessToken!=null) {
-        this.projectList = await window.ipcRenderer.invoke('project:list',
-          {clientId: "renyuteamcgteam",accessToken:accessToken}).catch( err => {
-          alert(err)
-        });
-        if (this.projectList instanceof Error) {
-          this.loginModalActive = true
-        } else {
-          this.loginModalActive = false
+        if (this.clientId!=null) {
+          this.projectList = await window.ipcRenderer.invoke('project:list',
+            {clientId: this.clientId,accessToken:accessToken}).catch( err => {
+            alert(err)
+          });
+          console.log(this.projectList)
+          if (this.projectList instanceof Error) {
+            this.loginModalActive = true
+          } else {
+            this.loginModalActive = false
+          }
         }
+
       } else {
         this.loginModalActive = true
       }
@@ -73,7 +84,8 @@ data(){
   },
   computed: {
     ...mapGetters([
-      "accessToken"
+      "accessToken",
+      "teamList"
     ]),
   },
 }

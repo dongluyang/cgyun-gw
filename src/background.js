@@ -301,10 +301,8 @@ async function handleAssetList(e,param) {
 }
 
 async function handleProjectList(e,param) {
-  console.log('ipcMain received: ' + param);
-
-  return await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects",
-    {client_id:"renyuteamcgteam"},{headers: {'Authorization': 'Bearer ' + param.accessToken}}).then(response => {
+  return await axios.post("http://cgyun.cn/cgproxy/system/project/getMyTeamProjects?client_id="+param.clientId,
+    {}, {headers: {'Authorization': 'Bearer ' + param.accessToken}}).then(response => {
     const res = response.data
     const list = res.data;
     let projectList = []
