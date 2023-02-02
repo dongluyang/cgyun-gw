@@ -33,7 +33,7 @@
         </footer>
       </div>
     <b-modal :active.sync="loginModalActive" has-modal-card>
-      <login-modal @hasSuccessDone="listProjects"></login-modal>
+      <login-modal @hasSuccessDone="closeLoginDialog"></login-modal>
     </b-modal>
   </div>
 </template>
@@ -55,31 +55,31 @@ data(){
   }
 },
   mounted() {
-    this.listProjects()
+    if (this.accessToken ==null) {
+      this.loginModalActive = true
+    } else {
+      this.listProjects()
+    }
   },
   methods: {
     async listProjects() {
-      const accessToken = this.accessToken
-      if (accessToken!=null) {
         if (this.clientId!=null) {
           this.projectList = await window.ipcRenderer.invoke('project:list',
-            {clientId: this.clientId,accessToken:accessToken}).catch( err => {
+            {clientId: this.clientId,accessToken:this.accessToken}).catch( err => {
             alert(err)
           });
-          console.log(this.projectList)
           if (this.projectList instanceof Error) {
             this.loginModalActive = true
           } else {
             this.loginModalActive = false
           }
         }
-
-      } else {
-        this.loginModalActive = true
-      }
     },
     selectProject(project) {
       this.$emit('selectProject', project)
+    },
+    closeLoginDialog() {
+      this.loginModalActive = false
     }
   },
   computed: {
