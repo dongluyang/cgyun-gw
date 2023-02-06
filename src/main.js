@@ -21,6 +21,11 @@ ipcRenderer.on("about", (arg, event) => {
   }
 });
 
+ipcRenderer.on("downloadProgress", (arg, event) => {
+  let component = router.currentRoute.matched[0].instances.default;
+    component.percentage = event.percent;
+    component.showProgressBar = true
+});
 
 // electron.remote.app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 

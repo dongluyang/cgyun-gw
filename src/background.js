@@ -3,7 +3,7 @@ import { app, protocol, Menu, BrowserWindow,dialog,ipcMain } from "electron";
 import path from 'path'
 import fs from 'fs'
 import axios from "axios";
-import Qs from 'qs';
+import autoUpdater from './update'
 import {
   createProtocol
   /* installVueDevtools */
@@ -18,6 +18,12 @@ let win;
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } }
 ]);
+
+// Object.defineProperty(app, 'isPackaged', {
+//   get() {
+//     return true;
+//   }
+// });
 
 function createWindow() {
   // Create the browser window.
@@ -380,6 +386,18 @@ app.on("ready", async () => {
     //   console.error('Vue Devtools failed to install:', e.toString())
     // }
   }
+
+  // 这里只在生产环境才执行版本检测。
+
+  if (process.env.NODE_ENV === 'production') {
+    autoUpdater.autoDownload = false
+    autoUpdater.checkForUpdates()
+    autoUpdater.on('download-progress', res => {
+      console.log(res)
+      win.webContents.send('downloadProgress', res)
+    })
+  }
+
   ipcMain.handle('dialog:openFile', handleFileOpen)
   ipcMain.handle('dialog:openExcel', handleExcelOpen)
   ipcMain.handle('asset:list',handleAssetList)

@@ -28,6 +28,11 @@
     <b-modal :active.sync="aboutModalActive" has-modal-card>
       <cn-about-modal></cn-about-modal>
     </b-modal>
+
+      <b-modal :active.sync="showProgressBar">
+        <b-progress :value="percentage" show-value format="percent"></b-progress>
+      </b-modal>
+
   </div>
 </template>
 
@@ -42,7 +47,9 @@ export default {
     return {
       proxies:{},
       serviceReady:true,
-      aboutModalActive:false
+      aboutModalActive:false,
+      percentage:0,
+      showProgressBar:false
     };
   },
   mounted() {
@@ -70,6 +77,23 @@ export default {
         type: 'is-danger'
       })
     }
+  },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    percentage(newValue,oldValue) {
+       if (newValue==100) {
+         this.showProgressBar = false
+       }
+    }
   }
 };
 </script>
+
+<style scoped>
+.progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>

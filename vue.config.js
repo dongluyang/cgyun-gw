@@ -59,6 +59,29 @@ module.exports = {
         },
         linux: {
           icon: "src/assets/icons"
+        },
+        publish: {
+
+          provider: 'generic',
+
+          url: 'http://cgyun.com/client/'
+
+        },
+        nsis: {
+
+          oneClick: false,
+
+          // 允许修改安装目录
+
+          allowToChangeInstallationDirectory: true,
+
+          allowElevation: true,
+
+          createDesktopShortcut: true,
+
+          createStartMenuShortcut: true,
+
+          shortcutName: "CGYUN"
         }
       }
     }
