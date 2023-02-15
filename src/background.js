@@ -8,12 +8,12 @@ import {
   createProtocol
   /* installVueDevtools */
 } from "vue-cli-plugin-electron-builder/lib";
+const { spawn } = require('child_process');
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
-
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } }
@@ -62,7 +62,7 @@ function createWindow() {
       label: "Application",
       submenu: [
         {
-          label: "About Code-Notes",
+          label: "关于CgYun客户端",
           click: () => {
             win.webContents.send("about", "about-modal-active");
           }
@@ -84,22 +84,22 @@ function createWindow() {
         }
       ]
     },
-    {
-      label: "Edit",
-      submenu: [
-        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-        { type: "separator" },
-        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-        {
-          label: "Select All",
-          accelerator: "CmdOrCtrl+A",
-          selector: "selectAll:"
-        }
-      ]
-    }
+    // {
+    //   label: "Edit",
+    //   submenu: [
+    //     { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+    //     { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+    //     { type: "separator" },
+    //     { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+    //     { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+    //     { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+    //     {
+    //       label: "Select All",
+    //       accelerator: "CmdOrCtrl+A",
+    //       selector: "selectAll:"
+    //     }
+    //   ]
+    // }
   ];
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
@@ -351,6 +351,25 @@ async function handleLogin(e,param) {
 
 }
 
+// 启动外部 exe 程序
+function startExternalProcess() {
+  const externalProcess = spawn(path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), '/CGGW'),['start']);
+
+  externalProcess.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  externalProcess.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  externalProcess.on('close', (code) => {
+    console.log(`子进程退出，退出代码 ${code}`);
+  });
+
+}
+
+
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -359,6 +378,11 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
+});
+
+
+app.on('before-quit', () => {
+  spawn(path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), '/CGGW'),['stop'])
 });
 
 app.on("activate", () => {
@@ -404,7 +428,7 @@ app.on("ready", async () => {
   ipcMain.handle('asset:delete',handleAssetDelete)
   ipcMain.handle('project:list',handleProjectList)
   ipcMain.handle('account:login',handleLogin)
-
+  startExternalProcess()
   createWindow();
 });
 

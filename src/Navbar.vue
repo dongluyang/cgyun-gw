@@ -3,7 +3,7 @@
     <img
       class="logo"
       src="~@/assets/img/cgyun-gw-logo-white-full.png"
-      alt="CGYun GateWay logo"
+      alt="CGYun logo"
     />
 
 <!--    <div class="is-pulled-right">-->

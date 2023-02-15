@@ -21,7 +21,7 @@ module.exports = {
         "@": path.join(__dirname, "./src")
       },
       extensions: [".js", ".vue", ".json", ".css", ".node"]
-    }
+    },
   },
   pluginOptions: {
     electronBuilder: {
@@ -31,11 +31,17 @@ module.exports = {
       externals: ["nedb"],
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder
-        productName: "CgYun GateWay",
+        productName: "CGYun Client",
         appId: "fr.lauthieb.code-notes",
         directories: {
           output: "build"
         },
+        extraResources: [
+          {
+            from: "src/extraResources",
+            to: "app.asar.unpacked/"
+          }
+        ],
         dmg: {
           contents: [
             {
@@ -81,7 +87,7 @@ module.exports = {
 
           createStartMenuShortcut: true,
 
-          shortcutName: "CGYUN"
+          shortcutName: "CGYun"
         }
       }
     }
